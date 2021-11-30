@@ -1,0 +1,20 @@
+version: '3.9'
+services:
+  db:
+    build: ./containers/pg
+    volumes:
+      - ./containers/pg/data/db:/var/lib/postgres/data
+    environment:
+      - POSTGRES_USER=flashcarduser
+      - POSTGRES_DB=flashcards
+      - POSTGRES_PASSWORD=postgres
+  backend:
+    build: ./containers/backend
+    env_file:
+      - dev.env
+    ports:
+      - "3000:8080"
+    volumes:
+      - ./containers/backend:/app
+      - /app/node_modules
+    command: "npm run test:watch"

@@ -1,4 +1,7 @@
+import { assert } from 'console';
 import {connectToDB, disconnectDB} from '../db/db'
+import User from '../models/user';
+import { connectPool, validateConn } from '../db/pgdb'
 
 describe('Testing Mongo Database connection',()=>{
     beforeAll(()=>{
@@ -11,19 +14,16 @@ describe('Testing Mongo Database connection',()=>{
         return disconnectDB();
     })
 
-    test('Adding a character',()=>{
-        const character={
-            meaning:'You',
-            pinyin:'ni3',
-            character:'你'
-        }
-    })
-
     test('User Creation',()=>{
         const user={
             username:'test user',
             password:'password',
             email:'thapas@beloit.edu'
+        }
+        const UserObject=new User(user);
+        try{
+            UserObject.save();
+        }catch(e){
         }
     })
 
@@ -45,4 +45,19 @@ describe('Testing Mongo Database connection',()=>{
 })
 
 describe('Testing pg database connection',()=>{
+    test('Validate Connection and release',async()=>{
+        const client=await connectPool();
+        expect(client).not.toBeNull()
+        client.release()
+    })
+
+
+    test('Adding a character',()=>{
+        const character={
+            meaning:'You',
+            pinyin:'ni3',
+            character:'你'
+        }
+    })
+
 })
